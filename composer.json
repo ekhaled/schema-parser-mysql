@@ -1,0 +1,20 @@
+{
+    "name": "ekhaled/schema-parser-mysql",
+    "description": "Parses MySQL table schema for a given DB, and outputs data for easy consumption by code generators",
+    "keywords": ["mysql","schema","schema-parser"],
+    "homepage": "https://github.com/ekhaled/schema-parser-mysql",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3.6",
+        "ext-pdo" : "*"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    },
+    "authors": [
+        {
+            "name": "ekhaled",
+            "email": "me.khaled@gmail.com"
+        }
+    ]
+}
