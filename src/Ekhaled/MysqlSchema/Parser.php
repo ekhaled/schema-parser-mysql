@@ -45,7 +45,7 @@ class Parser{
     public function getSchema($raw = false)
     {
         $TABLES = [];
-        $tables = $this->DB->query('SHOW Tables')->fetchAll(PDO::FETCH_COLUMN);
+        $tables = $this->DB->query('SHOW FULL Tables WHERE Table_Type != \'VIEW\'')->fetchAll(PDO::FETCH_COLUMN);
 
         foreach($tables as $table){
 
