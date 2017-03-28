@@ -45,12 +45,16 @@ class Parser{
     public function getSchema($raw = false)
     {
         $TABLES = [];
-        $tables = $this->DB->query('SHOW Tables')->fetchAll(PDO::FETCH_COLUMN);
+        $tables = $this->DB->query('SHOW FULL TABLES')->fetchAll(PDO::FETCH_NUM);
 
-        foreach($tables as $table){
+        foreach($tables as $tableRow){
+
+            $table = $tableRow[0];
+            $tableType = $tableRow[1];
 
             $TABLES[$table] = [
                 'name' => $table,
+                'type' => $tableType,
                 'columns' => [],
                 'foreignKeys' => [],
                 'primaryKey' => null,
