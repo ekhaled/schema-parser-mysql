@@ -55,6 +55,7 @@ class Parser{
             $TABLES[$table] = [
                 'name' => $table,
                 'type' => $tableType,
+                'is_connector_table' => false,
                 'columns' => [],
                 'foreignKeys' => [],
                 'primaryKey' => null,
@@ -183,7 +184,10 @@ class Parser{
                     'selfColumn' => $connections[1],
                 ];
 
-                unset($schema[$table['name']]);
+                foreach($schema[$table['name']]['columns'] as $k => &$v){
+                    unset($v['relation']);
+                }
+                $schema[$table['name']]['is_connector_table'] = true;
 
             }
         }
