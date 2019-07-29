@@ -116,6 +116,9 @@ class Parser{
 
     private function normalize(&$schema)
     {
+
+        $duplicateHasManyRelations = [];
+
         foreach($schema as &$table){
 
             if(count($table['foreignKeys']) > 0){
@@ -126,11 +129,34 @@ class Parser{
                         'table' => $targetTable
                     ];
                     //update other side of relation
+                    if(isset($schema[$targetTable]['relations'][$table['name']])){
+                        $schema[$targetTable]['relations'][$table['name']. '_by_' . $k] = [
+                            'type' => 'has-many',
+                            'table' => $table['name'],
+                            'column' => $k,
+                            'key' => $table['name']. '_by_' . $k
+                        ];
+                        $duplicateHasManyRelations[$targetTable][] = $table['name'];
+                    }else{
                     $schema[$targetTable]['relations'][$table['name']] = [
                         'type' => 'has-many',
                         'table' => $table['name'],
                         'column' => $k
                     ];
+                }
+
+                }
+
+            }
+        }
+
+        //patch has-many relations with relations to same table
+        if(count($duplicateHasManyRelations) > 0){
+            foreach($duplicateHasManyRelations as $tt => $dupes){
+                foreach($dupes as $tn){
+                    $_column = $schema[$tt]['relations'][$tn]['column'];
+                    $_key = $tn . '_by_' . $_column;
+                    $schema[$tt]['relations'][$tn]['key'] = $_key;
                 }
             }
         }
