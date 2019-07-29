@@ -129,7 +129,7 @@ class Parser{
                         'table' => $targetTable
                     ];
                     //update other side of relation
-                    if(isset($schema[$targetTable]['relations'][$table['name']])){
+                    if(isset($schema[$targetTable]['relations'][$table['name']]) || isset($schema[$targetTable]['columns'][$table['name']])){
                         $schema[$targetTable]['relations'][$table['name']. '_by_' . $k] = [
                             'type' => 'has-many',
                             'table' => $table['name'],
@@ -138,12 +138,12 @@ class Parser{
                         ];
                         $duplicateHasManyRelations[$targetTable][] = $table['name'];
                     }else{
-                    $schema[$targetTable]['relations'][$table['name']] = [
-                        'type' => 'has-many',
-                        'table' => $table['name'],
-                        'column' => $k
-                    ];
-                }
+                        $schema[$targetTable]['relations'][$table['name']] = [
+                            'type' => 'has-many',
+                            'table' => $table['name'],
+                            'column' => $k
+                        ];
+                    }
 
                 }
 
@@ -154,9 +154,11 @@ class Parser{
         if(count($duplicateHasManyRelations) > 0){
             foreach($duplicateHasManyRelations as $tt => $dupes){
                 foreach($dupes as $tn){
-                    $_column = $schema[$tt]['relations'][$tn]['column'];
-                    $_key = $tn . '_by_' . $_column;
-                    $schema[$tt]['relations'][$tn]['key'] = $_key;
+                    if(isset($schema[$tt]['relations'][$tn])){
+                        $_column = $schema[$tt]['relations'][$tn]['column'];
+                        $_key = $tn . '_by_' . $_column;
+                        $schema[$tt]['relations'][$tn]['key'] = $_key;
+                    }
                 }
             }
         }
